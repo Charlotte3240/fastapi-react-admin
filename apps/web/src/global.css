@@ -1,0 +1,16 @@
+/**
+ * 全局基础样式。
+ *
+ * 背景：Ant Design Pro 的 `LoginFormPage` 根节点使用 `height: 100%` 做垂直居中，
+ * 但浏览器默认 `html` / `body` / `#root` 都没有确定高度，`height: 100%` 会退化成
+ * `auto`，高度链断裂后登录卡片无法居中。这里补齐高度链并清掉 body 默认外边距。
+ */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}

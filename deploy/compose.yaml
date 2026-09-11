@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: unibiz
+      POSTGRES_USER: unibiz
+      POSTGRES_PASSWORD: unibiz
+      TZ: Asia/Shanghai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U unibiz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://unibiz:unibiz@postgres:5432/unibiz
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    command: ["sh", "-c", "cd apps/api && alembic upgrade head"]
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://unibiz:unibiz@postgres:5432/unibiz
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    command: ["python", "-m", "unibiz.worker"]
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://unibiz:unibiz@postgres:5432/unibiz
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/web.Dockerfile
+    ports:
+      - "8001:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

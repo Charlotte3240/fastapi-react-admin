@@ -1,0 +1,26 @@
+{
+  "name": "@unibiz/web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "max dev",
+    "build": "max build",
+    "typecheck": "max setup && tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "@ant-design/pro-components": "^2.8.0",
+    "@umijs/max": "^4.4.0",
+    "antd": "^6.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
